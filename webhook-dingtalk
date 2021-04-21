@@ -46,3 +46,18 @@ spec:
   selector:
     app: dingtalk
   sessionAffinity: None
+  ---
+  apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: mongodb-data
+  namespace: monitoring
+mountOptions:
+- nolock,tcp,noresvport
+- vers=3
+parameters:
+  volumeAs: subpath
+  server: "08a804a04aa-dar0.cn-hangzhou.nas.aliyuncs.com:/mnt/mongodb/"
+provisioner: nasplugin.csi.alibabacloud.com
+reclaimPolicy: Retain
+allowVolumeExpansion: true

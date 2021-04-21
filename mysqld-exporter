@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqld-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+   matchLabels:
+    app: mysqld-exporter
+  template:
+    metadata:
+      labels:
+        app: mysqld-exporter
+    spec:
+      containers:
+      - name: mysqld-exporter
+        imagePullPolicy: Always
+        env:
+          - name: DATA_SOURCE_NAME
+            value: "user:passwoed@(mariadb-0.mariadb.dev.svc.cluster.local:3306)/"
+        image: prom/mysqld-exporter
+        ports:
+        - containerPort: 9104
+          name: mysqld-exporter
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mysqld-exporter
+  name: mysqld-exporter
+  namespace: monitoring
+spec:
+  ports:
+  - name: mysqld-exporter
+    port: 9104
+    protocol: TCP
+    targetPort: 9104
+  type: NodePort
+  selector:
+    app: mysqld-exporter
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mysqld-exporter
+  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 5s
+    targetPort: 9104
+  selector:
+    matchLabels:
+      app: mysqld-exporter

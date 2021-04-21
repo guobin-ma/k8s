@@ -1,0 +1,20 @@
+{{ define "ding.link.title" }}[监控报警]{{ end }}
+{{ define "ding.link.content" -}}
+{{- if gt (len .Alerts.Firing) 0 -}}
+  {{ range $i, $alert := .Alerts.Firing }}
+    [告警项目]:{{ index $alert.Labels "alertname" }}
+    [告警实例]:{{ index $alert.Labels "instance" }}
+    [告警级别]:{{ index $alert.Labels "severity" }}
+    [告警阀值]:{{ index $alert.Annotations "value" }}
+    [告警详情]:{{ index $alert.Annotations "description" }}
+    [触发时间]:{{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}
+  {{ end }}{{- end }}
+{{- if gt (len .Alerts.Resolved) 0 -}}
+  {{ range $i, $alert := .Alerts.Resolved }}
+    [项目]:{{ index $alert.Labels "alertname" }}
+    [实例]:{{ index $alert.Labels "instance" }}
+    [状态]:恢复正常
+    [开始]:{{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}
+    [恢复]:{{ (.EndsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}
+  {{ end }}{{- end }}
+{{- end }}

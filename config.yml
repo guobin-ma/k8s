@@ -1,0 +1,5 @@
+templates:
+  - /etc/prometheus-webhook-dingtalk/templates/legacy/template.tmpl
+targets:
+  webhook1:
+    url: https://oapi.dingtalk.com/robot/send?access_token=6721b381177e5530a830efc50541291fa84b647822744ee59b9c43cc1880e10d
